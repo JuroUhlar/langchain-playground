@@ -7,7 +7,7 @@ export const run = async () => {
   const llmA = new OpenAI({});
   const chainA = loadQAStuffChain(llmA);
   const docs = [
-    new Document({ pageContent: "Harrison went to Harvard." }),
+    new Document({ pageContent: "Harrison went to Harvard.",  }),
     new Document({ pageContent: "Ankush went to Princeton." }),
   ];
   const resA = await chainA.call({
