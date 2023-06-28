@@ -1,0 +1,474 @@
+---
+title: "Server API"
+slug: "server-api"
+hidden: false
+metadata: 
+  title: "Understanding and using the server API | FingerprintJS Pro Docs"
+  description: "There are two server locations: US (N. Virginia) and EU (Frankfurt). Authentication, API methods, request parameters and more can be found in this article."
+  image: 
+    0: "https://files.readme.io/3ba973b-fingerprintjs-documentation.png"
+    1: "fingerprintjs-documentation.png"
+    2: 2000
+    3: 878
+    4: "#faf9fa"
+createdAt: "2020-10-08T22:59:28.179Z"
+updatedAt: "2023-06-12T11:57:29.754Z"
+type: "link"
+link_url: "https://dev.fingerprint.com/reference/pro-server-api"
+link_external: true
+---
+Server API allows you to get information about visitors (using the [`/visitors`](doc:server-api#get-visitor-history-identification-only) endpoint) or about individual events (using the [`/events`](doc:server-api#get-events-identification--bot-detection--aev) endpoint) in a server environment. 
+
+Server API is only for server-side usage, it's not intended to be used from the client side, whether it's a browser or a mobile device.
+
+If you want to identify browsers in your web application, read our [JS Agent guide](doc:js-agent).  
+If you want to identify mobile devices using native mobile SDKs, please read any of the platform guides in the "Mobile devices" sidebar section on the left.
+
+Server API requests do not count toward your monthly plan and are not billed.
+
+### Regions
+
+The server API is available in the **Global**, **EU** and **Asia (Mumbai)** regions:
+
+| Region        | Base URL                 | Server Location     |
+| :------------ | :----------------------- | :------------------ |
+| Global        | `https://api.fpjs.io`    | Global              |
+| EU            | `https://eu.api.fpjs.io` | Frankfurt,  Germany |
+| Asia (Mumbai) | `https://ap.api.fpjs.io` | Mumbai,  India      |
+
+### Authentication
+
+There are 2 ways to authenticate with the API: with auth header or with a query parameter. All unauthenticated requests will return HTTP 403 \(forbidden\) response.
+
+#### Auth header
+
+This is the recommended way of API authentication. When making an API request, add `Auth-API-Key` HTTP header with your [secret API key](doc:quick-start-guide#server-api).
+
+#### API key query parameter
+
+This method of authentication is easy to use when you want to test it in the browser. However we don't recommend using it in production.
+
+Example request with an API key query parameter:
+
+```http
+// Paste this URL into your browser
+// replace the API key with your real secret API key
+https://api.fpjs.io/visitors/someVisitorId?api_key=<<apiKey>>
+```
+
+### Get visitor history (Identification only)
+
+`GET` **/visitors/:id**
+
+> api-base-url**/visitors/:id**
+
+This endpoint allows you to get a history of visits with all available information. Use the `visitorId` as a URL path parameter. This API method is scoped to a visitor, i.e. all returned information is by visitorId.
+
+#### Request
+
+##### Path parameters
+
+| Parameter | Required/Optional | Type     | Description |
+| :-------- | :---------------- | :------- | :---------- |
+| id        | required          | `string` | visitorId   |
+
+##### Query parameters
+
+| Parameter  | Required/Optional | Type      | Description                                                |
+| :--------- | :---------------- | :-------- | :--------------------------------------------------------- |
+| request_id | optional          | `string`  | Filter events by `requestId`, see `requestId` for details. |
+| linked_id  | optional          | `string`  | Filter events by custom identifier.                        |
+| limit      | optional          | `number`  | Limit scanned results (see limiting for details).          |
+| before     | optional          | `integer` | Used to paginate results (see pagination for details).     |
+
+#### Response
+
+`200: OK`
+
+```json 200 OK Visits found
+// visitor found and recent visits history is available
+{
+  "visitorId": "Ibk1527CUFmcnjLwIs4A9",
+  "visits": [
+    {
+      "requestId": "0KSh65EnVoB85JBmloQK",
+      "incognito": true,
+      "linkedId": "somelinkedId",
+      "time": "2019-05-21T16:40:13Z",
+      // timestamp of the event with millisecond precision
+      "timestamp": 1582299576512,
+      "url": "https://www.example.com/login",
+      "ip": "61.127.217.15",
+      "ipLocation": {
+        "accuracyRadius": 10,
+        "latitude": 49.982,
+        "longitude": 36.2566,
+        "postalCode": "61202",
+        "timezone": "Europe/Dusseldorf",
+        "city": {
+          "name": "Dusseldorf"
+        },
+        "continent": {
+          "code": "EU",
+          "name": "Europe"
+        },
+        "country": {
+          "code": "DE",
+          "name": "Germany"
+        },
+        "subdivisions": [
+          {
+            "isoCode": "63",
+            "name": "North Rhine-Westphalia"
+          }
+        ],
+      },
+      "browserDetails": {
+        "browserName": "Chrome",
+        "browserMajorVersion": "74",
+        "browserFullVersion": "74.0.3729",
+        "os": "Windows",
+        "osVersion": "7",
+        "device": "Other",
+        "userAgent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) ....",
+      },
+      "confidence": {
+         "score": 0.97
+      },
+      "visitorFound": true,
+      "firstSeenAt": {
+         "global": "2022-03-16T11:26:45.362Z",
+         "subscription": "2022-03-16T11:31:01.101Z"
+      },
+      "lastSeenAt": {
+        "global": "2022-03-16T11:28:34.023Z",
+        "subscription": null
+      }
+    }
+  ],
+  // optional, if more results are available for pagination.
+  "lastTimestamp": 1582299576512
+}
+```
+
+See more information on `firstSeenAt/lastSeenAt` timestamps [here](doc:useful-timestamps).
+
+```json 200 OK No visits found
+// visitorId does not exist
+// or has no recorded visits in the available visit history 
+{
+  "visitorId": "Ibk1527CUFmcnjLwIs4A9",
+  "visits": []
+}
+```
+
+`403: Forbidden`
+
+Forbidden. Most likely the API key is incorrect or missing.
+
+```json forbidden
+{
+  "error": "Forbidden (HTTP 403)"
+}
+```
+`429: Too Many Requests`
+
+This response code is returned if the limit on secret API key requests per second has been exceeded.
+
+##### requestId
+
+Every identification event has a unique identifier, associated with it, called `requestId`. This identifier is returned back into the browser during the identification API call and is also available in API responses.  
+It is a convenient way to return the exact identification event that you need. When you filter events with `requestId`, only one event will be returned, because every event has a unique `requestId`.
+
+##### linkedId: adding a custom identifier to events
+
+If you need to associate events with your own identifier, use `linkedId`. You can use it in different scenarios: e.g., identify by sessionID, identify by purchaseID or by your custom transaction number. You should use `requestId` to get a single event, whereas you should use `linkedId` to retrieve several events, associated with your custom identifier.
+
+##### Limit: limiting scanned results
+
+For performance reasons, visitors API first performs events scanning and then filtering. Filtering always happens after the results are scanned.  
+`Limit` is a parameter to specify how many events should be scanned.  
+Results are always returned sorted by the timestamp in descending order \(most recent first\), so scanning the results limits how many events are scanned back in the past.  
+By default, the visits API scans 100 events. However you can specify a different `limit` parameter, to scan fewer or more results. A maximum value of 500 results can be scanned and returned.
+
+After the results were scanned, the filtering is applied to them, e.g., filtering by `requestId` or by `linkedId`. 
+
+> 📘 Note
+> 
+> There is a **1MB** limitation on the response size for a single request. If a response should exceed 1MB, the response returns the matching items with an additional **paginationKey** property that can be used in the next request to fetch the next page results.
+
+**Using limit example**: your website visitor was identified 120 times and 120 events are stored in our database. Last 10 events are associated with a sessionID = 1234ADF; You want to scan last 50 events and filter them by your sessionID = 1234ADF. You can achieve this by using this query:  
+
+```
+GET api-base-url/visitors/:visitorId?limit=50&linked_id=1234ADF
+```
+Only 10 rows from the most recent 50 will be returned.
+
+#### Pagination
+
+When more results are available \(e.g., you scanned 200 results using `limit` parameter, but a total of 600 results are available\), a special `lastTimestamp` top-level attribute is added to the response. You should use the value of this attribute, if you want to paginate the results further in the past, to return the events that happened before that timestamp.
+
+Example of using `before` parameter:
+
+```
+// 1st request, returning most recent 200 events:
+GET api-base-url/visitors/:visitorId?limit=200
+// Note that the response has lastTimestamp attribute in the response.
+// Use that attribute to return the events that happened before, i.e
+// next page of 200 events
+GET api-base-url/visitors/:visitorId?limit=200&before=1582232027567
+```
+
+Note that pagination happens during scanning of the results, so if you used pagination + filtering, you can have just a few results back, with potentially more results available for pagination. These timestamps are stored with a millisecond precision. When there are no more results available for scanning, the `lastTimestamp` attribute will not be returned.
+
+#### Headers
+
+`Retry-After`
+
+Indicates how long the user should wait before making a follow-up request. The value is non-negative decimal integer indicating the seconds to delay after the response is received.
+
+#### Node.js SDK
+
+The FingerprintJS Node.js SDK is published using npm for streamlined integration into your existing workflow. Please visit the [GitHub repository](https://github.com/fingerprintjs/fingerprintjs-pro-server-api-node-sdk) to learn more.
+
+### Get events (Identification + Bot Detection + AEV)
+
+`GET` **/events/:id**
+
+> api-base-url**/events/:id**
+
+This endpoint allows you to get events with all the information from each activated product - AEV, BotD and Fingerprinting. Use the [requestId](doc:js-agent#requestid) as a URL path `:id` parameter. This API method is scoped to a request, i.e. all returned information is by `requestId`.
+
+#### Request
+
+##### Path parameters
+
+| Parameter | Required/Optional | Type     | Description                         |
+| :-------- | :---------------- | :------- | :---------------------------------- |
+| id        | required          | `string` | [requestId](doc:js-agent#requestid) |
+
+#### Response
+
+`200: OK`
+
+```json
+{
+  "products": {
+    "identification": {
+      "data": {
+        "visitorId": "Ibk1527CUFmcnjLwIs4A9",
+        "requestId": "0KSh65EnVoB85JBmloQK",
+        "incognito": true,
+        "linkedId": "somelinkedId",
+        "time": "2019-05-21T16:40:13Z",
+        // timestamp of the event with millisecond precision
+        "timestamp": 1582299576512,
+        "url": "https://www.example.com/login",
+        "ip": "61.127.217.15",
+        "ipLocation": {
+          "accuracyRadius": 10,
+          "latitude": 49.982,
+          "longitude": 36.2566,
+          "postalCode": "61202",
+          "timezone": "Europe/Dusseldorf",
+          "city": {
+            "name": "Dusseldorf"
+          },
+          "continent": {
+            "code": "EU",
+            "name": "Europe"
+          },
+          "country": {
+            "code": "DE",
+            "name": "Germany"
+          },
+          "subdivisions": [
+            {
+              "isoCode": "63",
+              "name": "North Rhine-Westphalia"
+            }
+          ],
+        },
+        "browserDetails": {
+          "browserName": "Chrome",
+          "browserMajorVersion": "74",
+          "browserFullVersion": "74.0.3729",
+          "os": "Windows",
+          "osVersion": "7",
+          "device": "Other",
+          "userAgent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) ....",
+        },
+        "confidence": {
+           "score": 0.97
+        },
+        "visitorFound": true,
+        "firstSeenAt": {
+           "global": "2022-03-16T11:26:45.362Z",
+           "subscription": "2022-03-16T11:31:01.101Z"
+        },
+        "lastSeenAt": {
+          "global": "2022-03-16T11:28:34.023Z",
+          "subscription": null
+        }
+      }
+    },
+    "botd": {
+      "data": {
+        "bot": {
+          "result": "notDetected"
+        },
+        "url": "https://example.com/login",
+        "ip": "61.127.217.15",
+        "time": "2019-05-21T16:40:13Z"
+      }
+    },
+    "rootApps": {
+      "data": {
+        "result": false
+      }
+    },
+    "emulator": {
+      "data": {
+        "result": false
+      }
+    }
+  }
+}
+```
+
+##### identification.data
+
+See more information on `identification.data` fields [here](doc:server-api#response)
+
+##### botd.data
+
+###### bot.result
+
+Bot detection result. There are 3 following values:  
+• `notDetected` - no bot detected.  
+• `good` - good bot detected, such as Google bot, Baidu Spider, AlexaBot and so on.  
+• `bad` - bad bot detected, such as Selenium, Puppeteer, Playwright, headless browsers, and so on.
+
+###### ip
+
+IP address of the requesting browser or bot.
+
+###### time
+
+Time in UTC when the request from the JS agent was made. We recommend treating requests that are older than 2 minutes as malicious. Otherwise, request replay attacks are possible.
+
+##### rootApps.data
+
+###### result
+
+Returned when AEV (Application Environment Verification) functionality is enabled for an application. There are 2 values:  
+• `true` - Root Management Apps detected (e.g. Magisk)  
+• `false` - No Root Management Apps detected
+
+Available only for events from Android client. The field will be empty for a browser/iOS event.
+
+##### emulator.data
+
+###### result
+
+Returned when AEV (Application Environment Verification) functionality is enabled for an application. There are 2 values:  
+• `true` - Emulated environment detected (e.g. launch inside of AVD)  
+• `false` - No signs of emulated environment detected
+
+Available only for events from Android clients. The field will be empty for a browser/iOS event.
+
+#### Errors
+
+##### Common
+
+All common errors, like authorisation or validation errors, would be returned as follows:
+
+```json
+{
+  "error": {
+    "code": "<error-code>",
+    "message": "<error-message>"
+  }
+}
+```
+
+| Status | Code                    | Message                   | Description                                            |
+| :----- | :---------------------- | :------------------------ | :----------------------------------------------------- |
+| `403`  | `TokenRequired`         | `secret key is required`  | `Auth-API-Key` header is missing or empty.             |
+| `403`  | `TokenNotFound`         | `secret key is not found` | No application was found for the specified secret key. |
+| `403`  | `SubscriptionNotActive` | `forbidden`               | The application is not active.                         |
+| `403`  | `WrongRegion`           | `wrong region`            | Server and application regions are not the same.       |
+| `404`  | `RequestNotFound`       | `request id is not found` | Request not found for the specified id.                |
+
+##### Identification
+
+If some error occurred during identification, it would be returned as follows:
+
+`200: OK`
+
+```json
+{
+  "products": {
+    "identification": {
+      "error": {
+        "code": "<error-code>",
+        "message": "<error-message>"
+      }
+    }
+  }
+}
+```
+| Code                    | Message                 | Description                                                        |
+| :---------------------- | :---------------------- | :----------------------------------------------------------------- |
+| `429 Too Many Requests` | `too many requests`     | The limit on secret API key requests per second has been exceeded. |
+| `Failed`                | `internal server error` | Internal server error.                                             |
+
+##### BotD
+
+If some error occurred during bot detection, it would be returned as follows:
+
+`200: OK`
+
+```json
+{
+  "products": {
+    "botd": {
+      "error": {
+        "code": "<error-code>",
+        "message": "<error-message>"
+      }
+    }
+  }
+}
+```
+```
+```
+
+##### AEV
+
+If some error occurred during AEV work, it would be returned as follows:
+
+`200: OK`
+
+```json
+{
+  "products": {
+    "rootApps": {
+      "error": {
+        "code": "<error-code>",
+        "message": "<error-message>"
+      }
+    },
+    "emulator": {
+      "error": {
+        "code": "<error-code>",
+        "message": "<error-message>"
+      }
+    }
+  }
+}
+```
+| Code              | Message                 | Description                                                        |
+| :---------------- | :---------------------- | :----------------------------------------------------------------- |
+| `TooManyRequests` | `too many requests`     | The limit on secret API key requests per second has been exceeded. |
+| `Failed`          | `internal server error` | Internal server error.                                             |
