@@ -1,0 +1,642 @@
+[
+  [
+    "0",
+    {
+      "pageContent": "---\ntitle: \"🤖 Browser Bot Detection guide\"\nslug: \"bot-detection-quick-start-guide\"\nhidden: false\ncreatedAt: \"2022-10-11T23:44:48.294Z\"\nupdatedAt: \"2023-06-14T11:17:41.592Z\"\n---",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/bot-detection-quick-start-guide.md",
+        "loc": { "lines": { "from": 1, "to": 7 } }
+      }
+    }
+  ],
+  [
+    "1",
+    {
+      "pageContent": "## What is Fingerprint Browser Bot Detection?\n\nFingerprint Browser Bot Detection is Smart Signal on Pro Plus plan that detects automated activity on your website. It analyses a variety of browser attributes and gives you a bot detection signal with one of three values:\n\n- **Good bot** - usually a bot that belongs to a well-known search engine (Google, Amazon, Bing). It crawls websites to create a searchable content index. Good bots can also be monitoring or uptime-checking tools.\n\n- **Bad bot** - usually an automation tool like Selenium, Puppeteer, Playwright, or anything that pretends to be a good search bot. It can take over accounts, submit spam, steal passwords, scrape data, waste resources, etc.\n\n- **Bot not detected** - the visitor is likely a human using a regular browser.\n\nYou can use the provided bot detection signal to implement protective measures against malicious bots on your site.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/bot-detection-quick-start-guide.md",
+        "loc": { "lines": { "from": 8, "to": 18 } }
+      }
+    }
+  ],
+  [
+    "2",
+    {
+      "pageContent": "- **Bot not detected** - the visitor is likely a human using a regular browser.\n\nYou can use the provided bot detection signal to implement protective measures against malicious bots on your site.\n\nWe also provide an [open-source](doc:bot-detection-vs-botd) bot detection JavaScript library, called [BotD](https://github.com/fingerprintjs/BotD), which has fewer features and is able to detect basic automation tools only.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/bot-detection-quick-start-guide.md",
+        "loc": { "lines": { "from": 18, "to": 22 } }
+      }
+    }
+  ],
+  [
+    "3",
+    {
+      "pageContent": "## How to enable Fingerprint Bot Detection?\n\nIf you want to use Fingerprint Bot Detection, reach out to support at [support@fingerprint.com](mailto:support@fingerprint.com?subject=Enable%20Bot%20Detection) or enable the Pro Plus plan in the dashboard.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/bot-detection-quick-start-guide.md",
+        "loc": { "lines": { "from": 24, "to": 26 } }
+      }
+    }
+  ],
+  [
+    "4",
+    {
+      "pageContent": "## Integrating Bot Detection\n\nTypical integration into a project consists of 3 steps:\n\n1. Add a [JavaScript agent](https://dev.fingerprint.com/docs/js-agent) on the frontend part of your web application.\n2. Get the [`requestId`](doc:js-agent#requestid) from the JavaScript agent response and pass it to your server.\n3. Call [GET /events](https://dev.fingerprint.com/docs/server-api#get-events) endpoint from your server-side environment to retrieve the Bot Detection result. Use the information about possible bots in your business logic.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/bot-detection-quick-start-guide.md",
+        "loc": { "lines": { "from": 28, "to": 34 } }
+      }
+    }
+  ],
+  [
+    "5",
+    {
+      "pageContent": "### JavaScript agent\n\nThe JavaScript agent is a universal client-side SDK that collects different browser information and then sends it to the Fingerprint backend. The library returns an object with multiple fields, but for Bot Detection scenario, only the `requestId` is important for further server-side request processing. Other information is specific to the Identification product and is useful if this product is activated for your application.\n\n> 📘 Bot Detection and JavaScript agent versions\n> \n> Bot Detection works only with JS agent version 3.7.0 or newer. Check your version and [update](doc:migrating-from-previous-versions) it if needed.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/bot-detection-quick-start-guide.md",
+        "loc": { "lines": { "from": 36, "to": 42 } }
+      }
+    }
+  ],
+  [
+    "6",
+    {
+      "pageContent": "### Bot Detection results on the client side\n\nSince the data from the client browser might be spoofed by fraudulent parties, we strongly recommend server verification using the [Server API](doc:server-api).\n\nBad actors can replace the `requestId` with a fake value or completely delete this field. Check the request timestamp returned by the Server API – it shouldn't be older than several seconds or minutes depending on the implemented scenario. If the `requestId` doesn't pass the verification, you need to ask your users for additional verification (Captcha, 2FA) or deny access to the requested resource.\n\nAdditionally, the most secure way of using the Fingerprint platform is [Zero Trust Mode](doc:zero-trust-mode) which makes only `requestId` available to your frontend application.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/bot-detection-quick-start-guide.md",
+        "loc": { "lines": { "from": 44, "to": 50 } }
+      }
+    }
+  ],
+  [
+    "7",
+    {
+      "pageContent": "### Bot Detection webhook\n\nAdding Bot Detection results into the Webhook feature is a work in progress. You can use the Server API ([GET /events](https://dev.fingerprint.com/docs/server-api#get-events)) to get the results on your server in the meantime.\n\n### Native mobile libraries\n\nBot Detection doesn't have native mobile libraries, but it’s on our long-term feature roadmap.\n\n### Fingerprint's SDKs and libraries\n\nBot Detection is supported by all [provided client and server-side libraries](https://fingerprint.com/sdk-libraries/).",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/bot-detection-quick-start-guide.md",
+        "loc": { "lines": { "from": 52, "to": 62 } }
+      }
+    }
+  ],
+  [
+    "8",
+    {
+      "pageContent": "## Identification and Bot Detection\n\nFingerprint Identification and Bot Detection produce best results when used together. Bot Detection will try to detect if current activity is done by a bot and then run the identification if it's not a bot.\n\nA combination of Identification and Bot Detection gives you a powerful tool to prevent online fraud. Activating both products instead of using a single one doesn't have any drawbacks. You will still have one JavaScript agent in the client browser that makes one request to pass browser information for all products, a single `requestId` used by two products under the hood, and one server-to-server request to retrieve the results of both products.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/bot-detection-quick-start-guide.md",
+        "loc": { "lines": { "from": 64, "to": 68 } }
+      }
+    }
+  ],
+  [
+    "9",
+    {
+      "pageContent": "If you use two signals, Bot Detection will add additional protection for the Identification. In case a request is made by a good or bad bot, `visitorId` won't be generated and we won't charge you for Identification for this particular request. It also means that you won't get the identification field in the [GET /events](https://dev.fingerprint.com/docs/server-api#get-events) response if Bot Detection found a bot.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/bot-detection-quick-start-guide.md",
+        "loc": { "lines": { "from": 70, "to": 70 } }
+      }
+    }
+  ],
+  [
+    "10",
+    {
+      "pageContent": "---\ntitle: \"JavaScript agent\"\nslug: \"js-agent\"\nexcerpt: \"Fingerprint Platform JavaScript browser SDK. Not supported in Node.js, requires web browser to work.\"\nhidden: false\nmetadata: \n  title: \"Introduction to the JavaScript Agent | FingerprintJS Pro Docs\"\n  description: \"The easy-to-install JavaScript agent collects multiple device and browser signals and sends them to the FingerprintJS Pro API for processing and identification.\"\n  image: \n    0: \"https://files.readme.io/785134d-fingerprintjs-documentation.png\"\n    1: \"fingerprintjs-documentation.png\"\n    2: 2000\n    3: 878\n    4: \"#faf9fa\"\ncreatedAt: \"2020-10-08T22:59:28.187Z\"\nupdatedAt: \"2023-06-14T14:07:59.272Z\"\n---\nThe client-side agent is a high-performance JavaScript agent that collects multiple device and browser signals and sends them to the Fingerprint Platform API for processing, identification, and bot detection.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 1, "to": 18 } }
+      }
+    }
+  ],
+  [
+    "11",
+    {
+      "pageContent": "> 📘 Integrations and SDKs\n> \n> For a list of supported integrations,  see [Integrations](https://dev.fingerprint.com/docs/integrations).  \n> We also have [frontend SDKs](https://dev.fingerprint.com/docs/frontend-libraries) for the popular JavaScript frameworks and [Backend SDKs](https://dev.fingerprint.com/docs/backend-libraries) for working with our Server API.\n\n> 📘 \n> \n> If you want to use Bot Detection, reach out to our support at [support@fingerprint.com](mailto:support@fingerprint.com?subject=Enable%20Bot%20Detection). Browser Identification is available by default. Bot Detection works only with JS agent version 3.7.0 or newer. Check your version and [update](doc:migrating-from-previous-versions) if needed.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 20, "to": 27 } }
+      }
+    }
+  ],
+  [
+    "12",
+    {
+      "pageContent": "## Installing the agent + quick usage examples\n\nThere are various ways to install the agent but the API stays the same no matter which one you choose.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 29, "to": 31 } }
+      }
+    }
+  ],
+  [
+    "13",
+    {
+      "pageContent": "### CDN\n\nThis is the easiest way to start. It's also known as ESM import. Add the following HTML code to your page:\n\n```html\n<script>\n  // Initialize the agent once at web application startup.\n  // Alternatively initialize as early on the page as possible.\n  const fpPromise = import('https://fpjscdn.net/v3/<<browserToken>>')\n    .then(FingerprintJS => FingerprintJS.load())\n\n  // Analyze the visitor when necessary.\n  fpPromise\n    .then(fp => fp.get())\n    .then(result => console.log(result.requestId, result.visitorId))\n</script>",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 33, "to": 48 } }
+      }
+    }
+  ],
+  [
+    "14",
+    {
+      "pageContent": "```\n\nPut your public API key to the URL (right after `/v3/`). You can get an API key at [dashboard.fingerprint.com](https://dashboard.fingerprint.com). An example script URL where the key is `qwerty`: `https://fpjscdn.net/v3/qwerty`.\n\nAlternatively, you can use a synchronous code that pauses the other scripts during loading and therefore is not recommended:\n\n```html\n<script src=\"https://fpjscdn.net/v3/<<browserToken>>/iife.min.js\"></script>\n<script>\n  // Initialize the agent at application startup.\n  var fpPromise = FingerprintJS.load()\n\n  // Analyze the visitor when necessary.\n  fpPromise\n    .then(function (fp) { return fp.get() })\n    .then(result => console.log(result.requestId, result.visitorId))\n</script>",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 49, "to": 65 } }
+      }
+    }
+  ],
+  [
+    "15",
+    {
+      "pageContent": "```\n\nUMD installation method designed for module loaders like [RequireJS](https://requirejs.org) is also available:\n\n```javascript\nrequire(\n  ['https://fpjscdn.net/v3/<<browserToken>>/umd.min.js'],\n  FingerprintJS => {\n    // Initialize an agent.\n    const fpPromise = FingerprintJS.load()\n\n    // Analyze the visitor when necessary.\n    fpPromise\n      .then(fp => fp.get())\n      .then(result => console.log(result.requestId, result.visitorId))\n  }\n)\n```\n\n> 🚧 \n> \n> We don't recommend copying these JS files from fpjscdn.net to your codebase because you may miss critical updates. If you absolutely must host all JavaScript resources yourself, please reach out to our support at [support@fingerprint.com](mailto:support@fingerprint.com?subject=I%20want%20to%20keep%20JS%20Agent%20code%20on%20my%20server) for a solution.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 66, "to": 87 } }
+      }
+    }
+  ],
+  [
+    "16",
+    {
+      "pageContent": "### NPM\n\nFirst install the [agent NPM package](https://www.npmjs.com/package/@fingerprintjs/fingerprintjs-pro):\n\n```shell NPM\nnpm install @fingerprintjs/fingerprintjs-pro\n```\n```shell Yarn\nyarn add @fingerprintjs/fingerprintjs-pro\n```\n\nThen import the package into your code:\n\n```javascript\nimport * as FingerprintJS from '@fingerprintjs/fingerprintjs-pro'\n\n// Initialize an agent at application startup.\nconst fpPromise = FingerprintJS.load({ apiKey: '<<browserToken>>' })\n\n// Analyze the visitor when necessary.\nfpPromise\n  .then(fp => fp.get())\n  .then(result => console.log(result.requestId, result.visitorId))",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 89, "to": 111 } }
+      }
+    }
+  ],
+  [
+    "17",
+    {
+      "pageContent": "```\n\nWe recommend typing `import * as FingerprintJS from` instead of `import FingerprintJS from` because the `*` variant allows excluding the unused code from your application by [tree-shaking](https://en.wikipedia.org/wiki/Tree_shaking).\n\nThe NPM package comes with a [TypeScript declaration](https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html) for a better development experience. The package can be used with various module bundlers such as [Webpack](https://webpack.js.org), [Rollup.js](https://rollupjs.org) or [Browserify](http://browserify.org). If you have a TypeScript error that occurs in the FingerprintJS file, see the [TypeScript support section](#typescript-support).\n\nAlternatively, you can use the legacy CommonJS standard:\n\n```javascript\nconst FingerprintJS = require('@fingerprintjs/fingerprintjs-pro')\n\n// Initialize an agent at application startup.\nconst fpPromise = FingerprintJS.load({ apiKey: '<<browserToken>>' })",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 112, "to": 124 } }
+      }
+    }
+  ],
+  [
+    "18",
+    {
+      "pageContent": "```javascript\nconst FingerprintJS = require('@fingerprintjs/fingerprintjs-pro')\n\n// Initialize an agent at application startup.\nconst fpPromise = FingerprintJS.load({ apiKey: '<<browserToken>>' })\n\n// Analyze the visitor when necessary.\nfpPromise\n  .then(fp => fp.get())\n  .then(result => console.log(result.requestId, result.visitorId))",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 124, "to": 133 } }
+      }
+    }
+  ],
+  [
+    "19",
+    {
+      "pageContent": "```\n\n> 📘 NPM package connects to our CDN for updates\n> \n> When you call `FingerprintJS.load()`, the NPM package connects to our CDN and downloads the latest fingerprinting logic at runtime. We routinely update our fingerprinting agent to keep up with the latest changes in browsers, ad blockers, and fraud techniques. This ensures the highest possible identification accuracy without the need to frequently update your NPM dependencies and redeploy your application.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 134, "to": 138 } }
+      }
+    }
+  ],
+  [
+    "20",
+    {
+      "pageContent": "## Initializing the agent\n\nThe JS agent has 2 methods: `load()` and `get()`. \n\nThe `load()` method returns a [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolves to an agent instance. Use it to initlize the agent: \n\n- When using the CDN, call `import()` to download the JS agent a then `load()` on the result to get a promise of the JS agent instance.\n- When using the NPM package, call `load()` to download the latest client-side logic and and get a promise of the JS instance. \n\nOnce you have JS agent instance promise, you can resolve it and call `get()` to send an identification requests to Fingerprint API.\n\n```html HTML & CDN\n<script>\n  // Initilize the agent with load()\n  const fpPromise = import('https://fpjscdn.net/v3/<<browserToken>>')\n    .then(FingerprintJS => FingerprintJS.load())",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 140, "to": 155 } }
+      }
+    }
+  ],
+  [
+    "21",
+    {
+      "pageContent": "```html HTML & CDN\n<script>\n  // Initilize the agent with load()\n  const fpPromise = import('https://fpjscdn.net/v3/<<browserToken>>')\n    .then(FingerprintJS => FingerprintJS.load())\n\n  fpPromise\n    .then(fp => fp.get())\n    .then(result => console.log(result.requestId, result.visitorId))\n</script>\n```\n```javascript\nimport * as FingerprintJS from '@fingerprintjs/fingerprintjs-pro'\n\n// Initilize the agent with load()\nconst fpPromise = FingerprintJS.load({ apiKey: '<<browserToken>>' })\n\nfpPromise\n  .then(fp => fp.get())\n  .then(result => console.log(result.requestId, result.visitorId))",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 155, "to": 174 } }
+      }
+    }
+  ],
+  [
+    "22",
+    {
+      "pageContent": "```\n\nNote that both _agent-download_ and _get-result_ HTTP requests can be blocked by ad blockers if you call our CDN or API directly. See [Protecting the JavaScript agent from ad-blockers](https://dev.fingerprint.com/docs/protecting-the-javascript-agent-from-adblockers) for a detailed breakdown of available solutions.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 175, "to": 177 } }
+      }
+    }
+  ],
+  [
+    "23",
+    {
+      "pageContent": "## `load()` options\n\nTo configure the agent, pass parameters into the “load” function.\n\n### `apiKey`\n\n> **Required**: yes for NPM installation  \n> **Type**: string  \n> **Used by products**: all\n\nYour public API key to authenticate the agent. You can get one at [dashboard.fingerprint.com](https://dashboard.fingerprint.com). If you login into this documentation portal through the dashboard, you will be able to see your personal API key in the example below.\n\nExample usage:\n\n```javascript\nconst fpPromise = FingerprintJS.load({ apiKey: \"<<browserToken>>\" })\n```\n\nThe parameter is required for the NPM installation method and optional for the CDN (where the key is a part of the URL).",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 179, "to": 197 } }
+      }
+    }
+  ],
+  [
+    "24",
+    {
+      "pageContent": "### `region`\n\n> **Required**: no  \n> **Default**: `us`  \n> **Available values**: `us`, `eu` and `ap`  \n> **Used by products**: all\n\nUse this parameter to specify the [region](regions) you picked for your application during registration (defaults to `us`). \n\nThe Fingerprint Platform CDN can usually determine the region automatically using your API Key. Nevertheless, we recommend you specify it explicitly. Our proxy integrations like [Cloudflare](cloudflare-integration) and [CloudFront](cloudfront-proxy-integration) rely on the `region` parameter, as they do not have access to the same internal API that our CDN does. Even if you use our CDN, specifying the region explicitly will keep your JS agent working correctly if our internal API is temporarily disrupted. \n\nThe parameter is ignored when both the `endpoint` and `tlsEndpoint` parameters are used.\n\nExample:\n\n```javascript\nconst fpPromise = FingerprintJS.load({ region: 'eu' })\n```",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 199, "to": 216 } }
+      }
+    }
+  ],
+  [
+    "25",
+    {
+      "pageContent": "### `endpoint`\n\n> **Required**: no  \n> **Default**: (depends on the region)  \n> **Type**: `string | string[]`  \n> **Used by products**: all\n\nThis parameter should only be used with the [Custom subdomain](doc:subdomain-integration) or [Cloudflare Integration](doc:fingerprintjs-pro-cloudflare-integration). Specify your custom endpoint URL here.\n\nMultiple endpoints can be set using an array. The JS agent will try to send the request with the first endpoint, and if the request fails, retry the request with the second endpoint, and so on. Use `FingerprintJS.defaultEndpoint` to fall back to the default endpoint.\n\n```javascript\nimport * as FingerprintJS from '@fingerprintjs/fingerprintjs-pro'\n\nconst fpPromise = FingerprintJS.load({\n  apiKey: 'your-public-api-key',\n  endpoint: [\n    'https://fp.example.com', // This endpoint will be used primarily\n    FingerprintJS.defaultEndpoint, // The default endpoint will be used if the primary fails\n  ],\n})",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 218, "to": 238 } }
+      }
+    }
+  ],
+  [
+    "26",
+    {
+      "pageContent": "```\n\nJS agent will throw an error if an empty array is given.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 239, "to": 241 } }
+      }
+    }
+  ],
+  [
+    "27",
+    {
+      "pageContent": "### `tlsEndpoint`\n\n> **Required**: no  \n> **Default**: (depends on the region)  \n> **Type**: `string | string[]`  \n> **Since**: v3.1.0  \n> **Used by products**: identification\n\nYour custom TLS endpoint URL address.\n\nMultiple endpoints can be set with an array. The JS agent will try to send the request with the first endpoint, and if the request fails, retry the request with the second endpoint, and so on. Use `FingerprintJS.defaultTlsEndpoint` to fall back to the default endpoint.\n\n### `disableTls`\n\n> **Required**: no  \n> **Default**: `false`  \n> **Type**: string  \n> **Since**: v3.4.0  \n> **Used by products**: identification\n\nSet to `true` to disable the extra TLS request. This is not recommended as it will negatively affect your identification accuracy.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 243, "to": 263 } }
+      }
+    }
+  ],
+  [
+    "28",
+    {
+      "pageContent": "### `storageKey`\n\n> **Required**: no  \n> **Default**: `'_vid'`  \n> **Type**: string  \n> **Used by products**: identification\n\nName of key to store data in visitor browsers. The data is stored in cookies and local storage. You shouldn't change this parameter once your code runs in production. The change will cause the data in visitor browsers to be purged which will decrease the identification accuracy.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 265, "to": 272 } }
+      }
+    }
+  ],
+  [
+    "29",
+    {
+      "pageContent": "### `scriptUrlPattern`\n\n> Only for NPM installation  \n> **Required**: no  \n> **Default**: `'https://fpnpmcdn.net/v<version>/<apiKey>/loader_v<loaderVersion>.js'`  \n> **Type**: `string | string[]`  \n> **Since**: v3.6.0  \n> **Used by products**: all\n\nThis parameter should only be used with proxy integrations ([Cloudflare](https://dev.fingerprint.com/docs/cloudflare-integration-new-accounts), [CloudFront](doc:cloudfront-proxy-integration)). The pattern of the URL from where the JS agent downloads the latest code at runtime. By default, the JS agent downloads the code from our CDN. JS agent replaces the following substrings:\n\n- `<version>` — the major version of the JS agent;\n- `<apiKey>` — the public key set via the `apiKey` parameter;\n- `<loaderVersion>` — the exact version of the `@fingerprintjs/fingerprintjs-pro` package.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 274, "to": 287 } }
+      }
+    }
+  ],
+  [
+    "30",
+    {
+      "pageContent": "You can set multiple endpoints using an array. The JS agent will try to download the code from the first URL, and if it fails, retry to download with the second URL, and so on. Use `FingerprintJS.defaultScriptUrlPattern` to fall back to the default URL.\n\n```javascript\nimport * as FingerprintJS from '@fingerprintjs/fingerprintjs-pro'\n\nconst fpPromise = FingerprintJS.load({\n  apiKey: 'your-public-api-key',\n  scriptUrlPattern: [\n    // This endpoint will be used primarily\n    '/myproxy/v<version>/<apiKey>/loader_v<loaderVersion>.js',\n\n    // The default endpoint will be used if the primary fails\n    FingerprintJS.defaultScriptUrlPattern,\n  ],\n})\n```",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 289, "to": 304 } }
+      }
+    }
+  ],
+  [
+    "31",
+    {
+      "pageContent": "## Analyzing the visitor\n\nOnce an agent instance is initialized, you can start analyzing the visitor. The analysis can involve identification or [bot detection](https://fingerprint.com/products/bot-detection/), or both depending on your application settings. You are free to analyze at any time. You can configure Fingerprint Platform to receive the visitor data in the browser, on the server (via a [webhook](doc:webhooks)), or both.\n\nBelow are a few examples of different analysis approaches.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 306, "to": 310 } }
+      }
+    }
+  ],
+  [
+    "32",
+    {
+      "pageContent": "### Automatic mode\n\nIn many cases, you will use the automatic mode, because it's the simplest way to get started. The agent will identify the visitor on every page load. You don't need to do anything else. Just add the `fp.get()` call as soon as the agent is loaded:\n\n```javascript\nconst fpPromise = FingerprintJS.load(/* ... */)\nconst fp = await fpPromise\nconst result = await fp.get()\nconsole.log(result.requestId)\n```\n\nYou can use both `async/await` and promises to get the visitor data. Example of using promises:\n\n```javascript\nconst fpPromise = FingerprintJS.load(/* ... */)\nfpPromise\n  .then(fp => fp.get())\n  .then(result => console.log(result.requestId))\n```\n\nWhen `get()` is called, a FingerprintJS server will send a [webhook request](doc:webhooks) to your server (once configured). You can also query the [Server API](doc:server-api#get-events) to retrieve the visitor data using the `requestId` value.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 312, "to": 332 } }
+      }
+    }
+  ],
+  [
+    "33",
+    {
+      "pageContent": "### Manual mode\n\nManual mode provides more granular control over when the analysis is performed. When you actually need to get visitor data (on a signup event, for example), call the `.get()` method to get the data.\n\n```javascript Async/await\nconst fpPromise = FingerprintJS.load(/* ... */)\n\ndocument.querySelector('#ad').addEventListener('click', async () => {\n  const fp = await fpPromise\n  const result = await fp.get()\n  console.log(result.requestId)\n})\n```\n```javascript Promises\nconst fpPromise = FingerprintJS.load(/* ... */)\n\ndocument.querySelector('#ad').addEventListener('click', () => {\n  fpPromise\n    .then(fp => fp.get())\n    .then(result => console.log(result.visitorId))\n})\n```\n\n### Search bots\n\nThe Fingerprint Platform recognizes the most well-known search bots (Google, Bing, Yahoo, Baidu, DuckDuckGo, and others) and treats them differently. Whenever a page is loaded by a search bot, an analysis event is processed server-side, but the search bot requests are not billed.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 334, "to": 359 } }
+      }
+    }
+  ],
+  [
+    "34",
+    {
+      "pageContent": "## `get()` options\n\n### `extendedResult`\n\n> **Required**: no  \n> **Default**: false  \n> **Type**: boolean  \n> **Used by products**: identification\n\nTwo types of responses are supported: default and extended. You don't need to pass any parameters to get the default response. Extended result format includes geolocation, incognito mode, and other information. It can be requested by setting the `extendedResult` parameter to  `true`. See more details about the responses [here](#get-response).",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 361, "to": 370 } }
+      }
+    }
+  ],
+  [
+    "35",
+    {
+      "pageContent": "### `products`\n\n> **Required**: no  \n> **Default**: (depends on the API key)  \n> **Type**: string\\[]  \n> **Since**: v3.7.0  \n> **Used by products**: all\n\nYou can enable or disable Fingerprint products that will handle this request. You won't be billed for the disabled products. An example of enabling only identification:\n\n```javascript\nawait fp.get({ products: ['identification'] })",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 372, "to": 383 } }
+      }
+    }
+  ],
+  [
+    "36",
+    {
+      "pageContent": "```\n\nPossible array values: \n\n- `'identification'` — Browser Identification\n- `'botd'` — [Bot Detection](https://fingerprint.com/products/bot-detection/)\n\nEnabled products are configured for your application via our support. Once a product is enabled, you can decide if you want to run it on a specific page or in a certain situation. \n\nFor example, you can contact support to enable both products: \"identification\" and \"botd\". Then you can run only `identification` on the \"Submit order\" page, run only `botd` on the \"Add comment\" page, and run both on the \"Create account\" page. \n\nApplication configuration of enabled products overrides the client-side `products` parameter. If the option is not set, all the products enabled for your application will be run.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 384, "to": 395 } }
+      }
+    }
+  ],
+  [
+    "37",
+    {
+      "pageContent": "### `linkedId`\n\n> **Required**: no  \n> **Default**: undefined  \n> **Type**: string  \n> **Constraint**: the number of characters must not exceed 256  \n> **Used by products**: identification\n\n`linkedId` is a way of linking the current analysis event with a custom identifier. This will allow you to filter visit information when using the [Server API](doc:server-api).\n\n```javascript Add a custom identifier to an analysis event\n// Making an API call\nvar orderId = 3936532456\nfp.get({ linkedId: orderId })\n// linkedId will be saved with this event and will be available to be queried later.\n```\n\nTo learn more about `tag` and `linkedId` use cases, see [Linking and tagging information](https://dev.fingerprint.com/docs/tagging-information).",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 397, "to": 414 } }
+      }
+    }
+  ],
+  [
+    "38",
+    {
+      "pageContent": "### `tag`\n\n> **Required**: no  \n> **Default**: undefined  \n> **Type**: any simple value or an object (not arrays)  \n> **Constraint**: the size must not exceed 16KB  \n> **Used by products**: all\n\n`tag` is a customer-provided value or an object that is saved with the identification event and returned back to you in a webhook message or Server API response. You can use `tag` to associate the visit event with other information you have about the visitor.\n\nYou can use any simple value (string, number, boolean) or an object. An object is saved as provided. A simple value (for example `123`) is returned wrapped in an object like this: `{ \"tag\": 123 }`.\n\nExamples of using the `tag` option:\n\n```javascript\nfp.get({ tag: 123 });\nfp.get({ tag: \"signup\" });\nfp.get({ tag: { id: \"456\", location: { city: \"Atlanta\", country: \"US\" }});",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 416, "to": 433 } }
+      }
+    }
+  ],
+  [
+    "39",
+    {
+      "pageContent": "```\n\nWhat comes back in a webhook or Server API response:\n\n```json\n{\n  \"visitorId\": \"nTxJ28Gt4CegeAwdWELL\",\n  \"tag\": { \"tag\": 123 },\n  // ...\n},\n{\n  \"visitorId\": \"nTxJ28Gt4CegeAwdWELL\",\n  \"tag\": { \"tag\": \"signup\" },\n  // ...\n},\n{\n  \"visitorId\": \"nTxJ28Gt4CegeAwdWELL\",\n  \"tag\": {\n    \"id\": \"456\",\n    \"location\": {\n      \"city\": \"Atlanta\",\n      \"country\": \"US\"\n    }\n  }\n  // ...\n}\n```\n\nTo learn more about `tag` and `linkedId` use cases, see [Linking and tagging information](https://dev.fingerprint.com/docs/tagging-information).",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 434, "to": 462 } }
+      }
+    }
+  ],
+  [
+    "40",
+    {
+      "pageContent": "### `timeout`\n\n> **Required**: no  \n> **Default**: 10000  \n> **Type**: number  \n> **Used by products**: all\n\nClient timeout controls the total time (both client-side and server-side) that any analysis event can run. It doesn't include the time when the page is in the background (not visible) because the browser may suspend the analysis process during that time. By default, it's 10 seconds. You can set the client-side timeout _in milliseconds_ using the `timeout` option. Example usage:\n\n```javascript\n// A timeout of 20 seconds\n// An example of the client-side timeout handling\ntry {\n  const result = await fp.get({ timeout: 20000 })\n  // ...\n} catch (error) {\n  if (error.message === FingerprintJS.ERROR_CLIENT_TIMEOUT) {\n    console.log(\"A timeout of 20 seconds exceeded\")\n  }\n}\n```\n\n> 🚧 \n> \n> Note that setting a low timeout (less than 2000ms) could increase identification failures on weaker devices with slower internet connections.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 464, "to": 488 } }
+      }
+    }
+  ],
+  [
+    "41",
+    {
+      "pageContent": "## `get()` response\n\n`fp.get()` returns a promise that resolves to an object. The object format depends on the [`extendedResult`](#extendedResult) option. The format summary:",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 490, "to": 492 } }
+      }
+    }
+  ],
+  [
+    "42",
+    {
+      "pageContent": "```javascript default\nawait fp.get()\n// response:\n{\n  \"requestId\": \"8nbmT18x79m54PQ0GvPq\",\n  \"visitorId\": \"2JGu1Z4d2J4IqiyzO3i4\",\n  \"visitorFound\": true,\n  \"confidence\": { \"score\": 0.995 }\n}\n```\n```javascript extendedResult\nawait fp.get({ extendedResult: true })\n// response:\n{\n  \"requestId\": \"8nbmT18x79m54PQ0GvPq\",\n  \"visitorId\": \"2JGu1Z4d2J4IqiyzO3i4\",\n  \"visitorFound\": true,\n  \"confidence\": { \"score\": 0.995 },\n  \"ip\": \"185.230.125.20\",\n  \"ipLocation\": {\n    \"accuracyRadius\": 10,\n    \"latitude\": 47.3925,\n    \"longitude\": 8.4546,\n    \"postalCode\": \"8010\",\n    \"timezone\": \"Europe/Zurich\",\n    \"city\": {\n      \"name\": \"Zurich\"\n    },\n    \"continent\": {\n      \"code\": \"EU\",\n      \"name\": \"Europe\"\n    },\n    \"country\": {\n      \"code\": \"CH\",\n      \"name\": \"Switzerland\"\n    },\n    \"subdivisions\": [\n      {\n        \"isoCode\": \"ZH\",\n        \"name\": \"Zurich\"\n      }\n    ]\n  },\n  \"browserName\": \"Chrome\",\n  \"browserVersion\": \"75.0.3770\",\n  \"os\": \"Mac OS X\",\n  \"osVersion\": \"10.14.5\",",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 494, "to": 540 } }
+      }
+    }
+  ],
+  [
+    "43",
+    {
+      "pageContent": "{\n        \"isoCode\": \"ZH\",\n        \"name\": \"Zurich\"\n      }\n    ]\n  },\n  \"browserName\": \"Chrome\",\n  \"browserVersion\": \"75.0.3770\",\n  \"os\": \"Mac OS X\",\n  \"osVersion\": \"10.14.5\",\n  \"device\": \"Other\",\n  \"incognito\": false,\n  \"firstSeenAt\": {\n    \"global\": \"2022-03-16T11:26:45.362Z\",\n    \"subscription\": \"2022-03-16T11:31:01.101Z\"\n  },\n  \"lastSeenAt\": {\n    \"global\": \"2022-03-16T11:28:34.023Z\",\n    \"subscription\": null\n  }\n}",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 540, "to": 560 } }
+      }
+    }
+  ],
+  [
+    "44",
+    {
+      "pageContent": "```\n\nWhen the identification product is disabled, all the fields except `requestId` are replaced with default values.\n\nResponse fields:",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 561, "to": 565 } }
+      }
+    }
+  ],
+  [
+    "45",
+    {
+      "pageContent": "### `requestId`\n\n> **Required**: yes  \n> **Type**: string\n\nThe request identifier is unique for every request. Use it to request information about a specific identification request from the [Server API](doc:server-api#get-events).\n\n### `visitorId`\n\n> **Required**: yes  \n> **Type**: string\n\nThe browser identifier (or device identifier for mobile platforms)\n\nThe field will contain an empty string if the visitor can't be identified, for example, a search bot. If the identification product is disabled, a dummy value is used.\n\n### `visitorFound`\n\n> **Required**: yes  \n> **Type**: boolean\n\nIf `true`, this visitor has been identified before (globally, across all Fingerprint Identification subscriptions, not only yours). If `false`, Fingerprint has never identified this visitor.\n\nSee `firstSeenAt` and `lastSeenAt` for useful timestamps of recorded visits both globally and scoped to only your subscription. \n\nIf the identification product is disabled, a dummy value is used.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 567, "to": 592 } }
+      }
+    }
+  ],
+  [
+    "46",
+    {
+      "pageContent": "### `confidence`\n\n> **Required**: yes  \n> **Type**: `{ score: number, comment?: string }`\n\nA number between 0 and 1 that represents the probability of accurate identification. The higher the number, the higher the chance of the visitor identifier being true. To learn more about how Fingerprint calculates this value, see [Understanding your confidence score](doc:understanding-your-confidence-score).\n\n### `zeroTrust`\n\n> **Required**: no  \n> **Type**: `{ hiddenFields: string[], comment?: string }`\n\nSee more details in the [Zero Trust Mode](doc:zero-trust-mode) guide.\n\n### `incognito`\n\n> Only when `extendedResult` is `true`  \n> **Required**: yes  \n> **Type**: boolean\n\nWhether the visitor is in [incognito/private mode](doc:incognito-private-mode-detection).\n\nIf the identification product is disabled, a dummy value is used.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 594, "to": 616 } }
+      }
+    }
+  ],
+  [
+    "47",
+    {
+      "pageContent": "### `browserName`\n\n> Only when `extendedResult` is `true`  \n> **Required**: yes  \n> **Type**: string\n\nBrowser name. Examples: `'Safari'`, `'Chrome'`.\n\nIf the identification product is disabled, a dummy value is used.\n\n### `browserVersion`\n\n> Only when `extendedResult` is `true`  \n> **Required**: yes  \n> **Type**: string\n\nBrowser version. Example: `'78.0.3904'`.\n\nIf the identification product is disabled, a dummy value is used.\n\n### `device`\n\n> Only when `extendedResult` is `true`  \n> **Required**: yes  \n> **Type**: string\n\nDevice. For desktop/laptop devices, the value will be \"Other\". Example: `'Samsung SM-J330F'`.\n\nIf the identification product is disabled, a dummy value is used.\n\n### `ip`\n\n> Only when `extendedResult` is `true`  \n> **Required**: yes  \n> **Type**: string\n\nIP address. Only IPv4 addresses are returned.\n\nIf the identification product is disabled, a dummy value is used.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 618, "to": 656 } }
+      }
+    }
+  ],
+  [
+    "48",
+    {
+      "pageContent": "### `ipLocation`\n\n> Only when `extendedResult` is `true`  \n> **Required**: no  \n> **Type**: object\n\n[IP address location](doc:geolocation). Can be empty for anonymous proxies. The value type:\n\n```typescript\n{\n  accuracyRadius?: number\n  latitude?: number\n  longitude?: number\n  timezone?: string\n  postalCode?: string\n  city?: {\n    name: string\n  }\n  subdivisions?: {\n    isoCode: string\n    name: string\n  }[]\n  country?: {\n    code: string\n    name: string\n  }\n  continent?: {\n    code: string\n    name: string\n  }\n}\n```\n\nIf the identification product is disabled, the value is absent.\n\n### `os`\n\n> Only when `extendedResult` is `true`  \n> **Required**: yes  \n> **Type**: string\n\nOperating system name. Examples: `'Mac OS X'`, `'Android'`.\n\nIf the identification product is disabled, a dummy value is used.\n\n### `osVersion`\n\n> Only when `extendedResult` is `true`  \n> **Required**: yes  \n> **Type**: string\n\nOperating system version. Examples: `'10.13.6'`.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 658, "to": 709 } }
+      }
+    }
+  ],
+  [
+    "49",
+    {
+      "pageContent": "### `osVersion`\n\n> Only when `extendedResult` is `true`  \n> **Required**: yes  \n> **Type**: string\n\nOperating system version. Examples: `'10.13.6'`.\n\n### `firstSeenAt`\n\n> Only when `extendedResult` is `true`  \n> **Required**: yes  \n> **Type**: `{ subscription: string | null, global: string | null }`\n\nThe first time this visitor was identified, both within your subscription and globally. See [Useful timestamps](doc:useful-timestamps) for more information.\n\nIf the identification product is disabled, a dummy value is used.\n\n### `lastSeenAt`\n\n> Only when `extendedResult` is `true`  \n> **Required**: yes  \n> **Type**: `{ subscription: string | null, global: string | null }`\n\nThe last time this visitor was identified, both within your subscription and globally. See [Useful timestamps](doc:useful-timestamps) for more information.\n\nIf the identification product is disabled, a dummy value is used.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 709, "to": 735 } }
+      }
+    }
+  ],
+  [
+    "50",
+    {
+      "pageContent": "## Error handling\n\nJavaScript agent's `load` and `get` methods return a promise which will be rejected in case of an error. The table below summarizes the possible types of errors.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 737, "to": 739 } }
+      }
+    }
+  ],
+  [
+    "51",
+    {
+      "pageContent": "| Error                                                 | Short description                                                                                                                                                      |\n| :---------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| `FingerprintJS.ERROR_NETWORK_CONNECTION`              | Fingerprint server connection error                                                                                                                                    |\n| `FingerprintJS.ERROR_NETWORK_ABORT`                   | Fingerprint server request is aborted                                                                                                                                  |",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 741, "to": 744 } }
+      }
+    }
+  ],
+  [
+    "52",
+    {
+      "pageContent": "| `FingerprintJS.ERROR_API_KEY_MISSING`                 | Public API key is missing                                                                                                                                              |\n| `FingerprintJS.ERROR_API_KEY_INVALID`                 | Public API key is invalid                                                                                                                                              |\n| `FingerprintJS.ERROR_API_KEY_EXPIRED`                 | Public API key is expired                                                                                                                                              |\n| `FingerprintJS.ERROR_BAD_REQUEST_FORMAT`              | Bad Fingerprint server request data. Can be caused by a wrong TLS endpoint.                                                                                            |",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 745, "to": 748 } }
+      }
+    }
+  ],
+  [
+    "53",
+    {
+      "pageContent": "| `FingerprintJS.ERROR_BAD_RESPONSE_FORMAT`             | Bad Fingerprint server response data. Can be caused by a wrong endpoint.                                                                                               |\n| `FingerprintJS.ERROR_GENERAL_SERVER_FAILURE`          | General request server side failure                                                                                                                                    |\n| `FingerprintJS.ERROR_CLIENT_TIMEOUT`                  | Client side timeout                                                                                                                                                    |\n| `FingerprintJS.ERROR_SERVER_TIMEOUT`                  | Server request times out                                                                                                                                               |",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 749, "to": 752 } }
+      }
+    }
+  ],
+  [
+    "54",
+    {
+      "pageContent": "| `FingerprintJS.ERROR_RATE_LIMIT`                      | Request rate limit is exceeded                                                                                                                                         |\n| `FingerprintJS.ERROR_FORBIDDEN_ORIGIN`                | Analysis request is blocked due to a forbidden origin (see [request filtering](doc:request-filtering))                                                                 |\n| `FingerprintJS.ERROR_FORBIDDEN_HEADER`                | Analysis request is blocked due to a forbidden HTTP header (see [request filtering](doc:request-filtering))                                                            |\n| `FingerprintJS.ERROR_FORBIDDEN_ENDPOINT`              | Analysis request is blocked due to a forbidden `endpoint`. Probably because the default endpoint is used instead of the [custom subdomain](doc:subdomain-integration). |",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 753, "to": 756 } }
+      }
+    }
+  ],
+  [
+    "55",
+    {
+      "pageContent": "| `FingerprintJS.ERROR_WRONG_REGION`                    | The [region](doc:regions) set in the agent options doesn't match the region that was used to create your application                                                   |\n| `FingerprintJS.ERROR_SUBSCRIPTION_NOT_ACTIVE`         | Your application hasn't been activated in the dashboard                                                                                                                |\n| `FingerprintJS.ERROR_UNSUPPORTED_VERSION`             | The JS agent version is not supported                                                                                                                                  |\n| `FingerprintJS.ERROR_SCRIPT_LOAD_FAIL`                | Failed to load the JS agent code. The error is available only for NPM installation.                                                                                    |",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 757, "to": 760 } }
+      }
+    }
+  ],
+  [
+    "56",
+    {
+      "pageContent": "| `FingerprintJS.​ERROR_INSTALLATION_METHOD_RESTRICTED` | The JS agent installation method is not allowed                                                                                                                        |\n| `FingerprintJS.ERROR_CSP_BLOCK`                       | Blocked by the [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) of the page                                                            |\n| `FingerprintJS.ERROR_INTEGRATION_FAILURE`             | Failure on the [integration](doc:integrations) side                                                                                                                    |\n| `FingerprintJS.ERROR_INVALID_ENDPOINT`                | The given [endpoint](#endpoint) is not a valid URL                                                                                                                     |",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 761, "to": 764 } }
+      }
+    }
+  ],
+  [
+    "57",
+    {
+      "pageContent": "With the exception of `ERROR_CLIENT_TIMEOUT`, `ERROR_NETWORK_CONNECTION` `ERROR_NETWORK_ABORT`, `ERROR_SCRIPT_LOAD_FAIL` and `ERROR_CSP_BLOCK`, all the errors described above will include the [`requestId` field](#requestid). The methods can also throw other unexpected errors, they should be treated as agent bugs.\n\nError handling example:\n\n```javascript Async/await\nconst fpPromise = FingerprintJS.load({ /* ... */ })\n\ntry {\n  const fp = await fpPromise\n  const result = await fp.get()\n} catch (error) {\n  switch (error.message) {\n    case FingerprintJS.ERROR_GENERAL_SERVER_FAILURE:\n      console.log('Unknown server error. Request id:', error.requestId)\n      break\n    case FingerprintJS.ERROR_CLIENT_TIMEOUT:\n      console.log('Analysis time limit of 10 seconds is exceeded')\n      break\n    default:\n      console.log('Other error')\n  }\n}\n```\n```javascript Promises\nconst fpPromise = FingerprintJS.load({ /* ... */ })",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 766, "to": 790 } }
+      }
+    }
+  ],
+  [
+    "58",
+    {
+      "pageContent": "fpPromise\n  .then(fp => fp.get())\n  .then(result => console.log(result.visitorId))\n  .catch(error => {\n    switch (error.message) {\n      case FingerprintJS.ERROR_GENERAL_SERVER_FAILURE:\n        console.log('Unknown server error. Request id:', error.requestId)\n        break\n      case FingerprintJS.ERROR_CLIENT_TIMEOUT:\n        console.log('Identification time limit of 10 seconds is exceeded')\n        break\n      default:\n        console.log('Other error')\n    }\n  })",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 792, "to": 806 } }
+      }
+    }
+  ],
+  [
+    "59",
+    {
+      "pageContent": "```\n\nThe connection error occurs when the agent fails to connect to the server API. This can happen during a network outage or if a browser plugin blocks networking requests \\(e.g. AdBlock\\).",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 807, "to": 809 } }
+      }
+    }
+  ],
+  [
+    "60",
+    {
+      "pageContent": "### Timeouts\n\nTwo types of timeouts are possible: a **server** timeout and a **client** timeout.\n\n#### Server timeout\n\nThe server timeout is fixed at 10 seconds of server-side processing time. If server-side processing exceeds 10 seconds for any reason, the promise will be rejected.\n\n#### Client timeout\n\n[Client timeout](#timeout) controls the total time (both client-side and server-side) that any analysis event is allowed to run. By default, it's 10 seconds. Note that even if the client-side timeout is exceeded, the server-side request can still be running, and its results will be sent to you via a [webhook](doc:webhooks) if enabled.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 811, "to": 821 } }
+      }
+    }
+  ],
+  [
+    "61",
+    {
+      "pageContent": "### Rate limiting\n\nEvery application API key has a rate limit. It means that you cannot make more requests per second than your rate limit allows. Paid applications have a limit of 5 requests per second, which you can increase by emailing [support@fingerprint.com](mailto:support@fingerprint.com). \n\nWhenever the rate limit is exceeded, the request is throttled and an `ERROR_RATE_LIMIT` error is thrown.\n\n### Retrying after an error\n\nJS agent retries automatically in case of failure. If you want the agent to make more attempts, increase the [timeout](#timeout). If you want to retry with another endpoint, set an array of endpoints in the JS agent option (see options: [scriptUrlPattern](#scripturlpattern), [endpoint](#endpoint), and [tlsEndpoint](#tlsendpoint)).\n\nWe don't recommend implementing your own retry mechanism around the JS agent because it can lead to excessive consumption of paid API calls.",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 823, "to": 833 } }
+      }
+    }
+  ],
+  [
+    "62",
+    {
+      "pageContent": "## Supported browsers\n\nThe JS agent supports all popular browsers. See more details and learn how to run the agent in old browsers in the [browser support guide](doc:browser-support).",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 835, "to": 837 } }
+      }
+    }
+  ],
+  [
+    "63",
+    {
+      "pageContent": "## TypeScript support\n\nJS agent officially supports TypeScript version 4.9 but may work with newer and older versions of TypeScript. If you face a TypeScript error that occurs in a `.d.ts` file provided by FingerprintJS ([example 1](https://github.com/fingerprintjs/fingerprintjs/issues/651), [example 2](https://github.com/fingerprintjs/fingerprintjs/issues/653)), consider any of these solutions:\n\n- Update the TypeScript package in your project to version 4.9 or newer\n  ```bash\n  npm i typescript@^4.9\n  # or\n  yarn add typescript@^4.9\n  ```\n- Prevent TypeScript from using the library types. Replace\n\n  ```ts\n  import ... from '@fingerprintjs/fingerprintjs-pro'\n  ```\n\n    with\n\n  ```ts\n  import ... from '@fingerprintjs/fingerprintjs-pro/dist/fp.esm.min'\n  ```\n\n    in your `.ts` files, and add the following line to a `.d.ts` file (if there is no such file, create one anywhere with any name):\n\n  ```\n  declare module '@fingerprintjs/fingerprintjs-pro/dist/fp.esm.min'\n  ```",
+      "metadata": {
+        "source": "/Users/jurajuhlar/Documents/Code/langchain-playground/data/fpTestSample/js-agent.md",
+        "loc": { "lines": { "from": 839, "to": 865 } }
+      }
+    }
+  ]
+]
